@@ -82,3 +82,50 @@
 ```
 YYYY-MM-DD HH:MM:SS - INFO - Сообщение
 ```
+
+## Тестирование
+
+Для обеспечения надежности и корректности работы системы управления библиотекой,
+в проекте реализованы автоматические тесты. Тесты написаны с использованием 
+библиотеки `unittest`.
+
+### Запуск тестов
+
+1. Убедитесь, что вы находитесь в директории проекта.
+2. Выполните следующую команду для запуска тестов:
+   ```bash
+   python -m unittest discover -s tests
+   ```
+
+### Структура тестов
+
+Тесты находятся в директории `tests` и охватывают следующие функциональные
+возможности:
+
+- Проверка добавления книг.
+- Проверка удаления книг.
+- Проверка поиска книг.
+- Проверка изменения статуса книг.
+- Проверка корректного сохранения и загрузки данных.
+
+### Пример теста
+
+Вот пример теста для проверки функции добавления книги:
+
+```python
+import unittest
+from library import Library, Book
+
+class TestLibrary(unittest.TestCase):
+    def setUp(self):
+        self.library = Library('library.json')
+
+    def test_add_book(self):
+        book = Book("Test Title", "Test Author", 2021, "available")
+        self.library.add_book(book)
+        self.assertEqual(len(self.library.books), 1)
+        self.assertEqual(self.library.books[0].title, "Test Title")
+
+if __name__ == '__main__':
+    unittest.main()
+```
