@@ -103,7 +103,7 @@ class Library:
             year (int): Year of publication.
         """
         book_id: str = str(uuid.uuid4())
-        new_book: Book = Book(book_id, title, author, year, status='available')
+        new_book: Book = Book(book_id, title, author, year, status='в наличии')
         self.books.append(new_book)
         self.save_books()
         logging.info(f'Book "{title}" added with ID {book_id}.')
