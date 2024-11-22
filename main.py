@@ -2,14 +2,17 @@ import json
 import uuid
 from datetime import datetime
 import logging
+from fileinput import lineno
 from pathlib import Path
 from typing import List, Optional, Dict, Any
 
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s',
-                    handlers=[
-                        logging.FileHandler("library.log", encoding='utf-8'),
-                    ])
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s - %(filename)s:%('
+           'lineno)d',
+    handlers=[
+        logging.FileHandler("library.log", encoding='utf-8'),
+    ])
 
 
 class Book:
@@ -102,6 +105,13 @@ class Library:
             author (str): Author of the book.
             year (int): Year of publication.
         """
+        for book in self.books:
+            if book.title == title and book.author == author and book.year == year:
+                logging.warning(
+                    f"Book '{title}' by {author} ({year}) already exists.")
+                print(
+                    f"Книга '{title}' автор {author} {year}г. уже существует.")
+                return
         book_id: str = str(uuid.uuid4())
         new_book: Book = Book(book_id, title, author, year, status='в наличии')
         self.books.append(new_book)
@@ -170,9 +180,9 @@ class Library:
             print('В библиотеке нет книг.')
         else:
             for book in self.books:
-                print(f'ID: {book.id}, Title: {book.title}, '
-                      f'Author: {book.author}, Year: {book.year}, '
-                      f'Status: {book.status}')
+                print(f'ID: {book.id}, Название: {book.title}, '
+                      f'Автор: {book.author}, Год: {book.year}, '
+                      f'Статус: {book.status}')
 
     def change_status(self, book_id: str, new_status: str) -> None:
         """Change the status of a book.
@@ -186,8 +196,7 @@ class Library:
             (book for book in self.books if book.id == book_id), None)
 
         if new_status not in ['в наличии', 'выдана']:
-            logging.warning(
-                'Invalid status. Available statuses: available/checked out.')
+            logging.warning('Invalid status.')
             print('Некорректный статус. Доступные статусы: в наличии/выдана.')
             return
 
