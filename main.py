@@ -112,7 +112,7 @@ class Library:
                     year == book.year):
                 logging.warning(
                     f"Book '{title}' by {author} ({year}) already exists.")
-                print(f"Книга: '{title}', автор '{author}' -  {year}г. "
+                print(f"Книга: '{title}', автор '{author}' - {year}г. "
                       "уже существует.")
                 return
         new_book: Book = Book(title, author, year, status='в наличии')
