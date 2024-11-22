@@ -18,18 +18,17 @@ logging.basicConfig(
 class Book:
     """Class for representing a book in the library."""
 
-    def __init__(self, book_id: str, title: str, author: str, year: int,
+    def __init__(self, title: str, author: str, year: int,
                  status: str) -> None:
         """Initialize a book.
 
         Args:
-            book_id (str): Unique identifier for the book.
             title (str): Title of the book.
             author (str): Author of the book.
             year (int): Year of publication.
             status (str): Status of the book (e.g., 'available', 'checked out').
         """
-        self.id: str = book_id
+        self.id: str = str(uuid.uuid4())
         self.title: str = title
         self.author: str = author
         self.year: int = year
@@ -59,8 +58,12 @@ class Book:
         Returns:
             Book: An instance of the book.
         """
-        return Book(data['id'], data['title'], data['author'], data['year'],
+        return Book(data['title'], data['author'], data['year'],
                     data['status'])
+
+    def __repr__(self):
+        return (f"Book(title={self.title}, author={self.author},"
+                f" year={self.year}, status={self.status})")
 
 
 class Library:
@@ -76,8 +79,7 @@ class Library:
         self.filename: Path = filename
         self.load_books()
 
-    def load_books(self) -> None:
-        """Load books from a file."""
+    def load_books(self):
         if self.filename.exists():
             try:
                 with self.filename.open('r', encoding='utf-8') as f:
@@ -106,18 +108,18 @@ class Library:
             year (int): Year of publication.
         """
         for book in self.books:
-            if book.title == title and book.author == author and book.year == year:
+            if (book.title == title and book.author == author and
+                    year == book.year):
                 logging.warning(
                     f"Book '{title}' by {author} ({year}) already exists.")
                 print(
                     f"Книга '{title}' автор {author} {year}г. уже существует.")
                 return
-        book_id: str = str(uuid.uuid4())
-        new_book: Book = Book(book_id, title, author, year, status='в наличии')
+        new_book: Book = Book(title, author, year, status='в наличии')
         self.books.append(new_book)
         self.save_books()
-        logging.info(f'Book "{title}" added with ID {book_id}.')
-        print(f'Книга "{title}" добавлена с ID {book_id}.')
+        logging.info(f'Book "{title}" added with ID {new_book.id}.')
+        print(f'Книга "{title}" добавлена с ID {new_book.id}.')
 
     def delete_book(self) -> None:
         """Delete a book from the library by ID."""
